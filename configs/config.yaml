@@ -1,0 +1,10 @@
+data:
+  path: data/raw/chest_xray/train
+  image_size: 224
+  validation_split: 0.2
+
+training:
+  batch_size: 32
+  epochs: 10
+  learning_rate: 0.001
+  seed: 42
