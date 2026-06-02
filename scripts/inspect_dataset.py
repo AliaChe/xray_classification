@@ -1,22 +1,21 @@
-from data.load_data import load_datasets
-from utils.load_config import load_config
+import tensorflow as tf
+from src.data.load_data import load_datasets
+from src.utils.load_config import load_config
+import matplotlib.pyplot as plt
 
 config = load_config() 
 
-train_ds, val_ds = load_datasets(config)
+train_ds, val_ds, test_ds, class_names = load_datasets(config)
+
+print("\n class names:", class_names)
+print("\n train batches:", tf.data.experimental.cardinality(train_ds))
+print("val batches:", tf.data.experimental.cardinality(val_ds))
+print("test batches:", tf.data.experimental.cardinality(test_ds), "\n")
 
 for images, labels in train_ds.take(1):
 
-    print(images.shape)
-    print(labels.shape)
-
-    print(labels[:10])
-
-import matplotlib.pyplot as plt
-
-class_names = train_ds.class_names
-
-print(class_names)
+    print("images shape:", images.shape)
+    print("labels shape:", labels.shape, "\n")
 
 for images, labels in train_ds.take(1):
 
