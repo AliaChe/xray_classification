@@ -2,7 +2,7 @@ from src.data.load_data import load_datasets
 from src.models.cnn_model import build_model
 from src.utils.load_config import load_config
 from src.evaluate import plot_history, plot_confusion_matrix
-from src.utils.class_weights import compute_weights
+from src.data.load_data import compute_weights
 
 config = load_config()
 
