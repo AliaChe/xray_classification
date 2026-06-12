@@ -1,5 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras import layers, models
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
 
 def build_model(config):
@@ -13,15 +14,9 @@ def build_model(config):
     )
 
     base_model.trainable = False
-    
-    # TODO:
-    # MobileNetV2 was pretrained with preprocess_input()
-    # Replace generic Rescaling(1./255) with:
-    # tf.keras.applications.mobilenet_v2.preprocess_input
-    # before benchmarking the final model.
 
     model = models.Sequential([
-        layers.Rescaling(1./255),
+        layers.Lambda(preprocess_input),
 
         base_model,
 

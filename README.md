@@ -124,52 +124,15 @@ Current model:
 - [x] TensorFlow dataloaders
 - [x] Train / validation split
 - [x] MobileNetV2 baseline architecture
+- [x] First training run
+- [x] Evaluation pipeline
+- [x] Confusion matrix
+- [x] Training curves
 
 ### In Progress
 
-- [ ] First training run
-- [ ] Evaluation pipeline
-- [ ] Confusion matrix
-- [ ] Training curves
 - [ ] Benchmarking
-
----
-
-## TODO
-
-### Data
-
-- [ ] Verify class imbalance
-- [ ] Add data augmentation
-
-### Model
-
-- [ ] Train baseline MobileNetV2 model
-- [ ] Fine-tune pretrained layers
-- [ ] Compare architectures
-
-### Preprocessing
-
-- [ ] Replace generic image rescaling with:
-
-```python
-tf.keras.applications.mobilenet_v2.preprocess_input
-```
-
-MobileNetV2 was pretrained on ImageNet using this preprocessing pipeline and should benefit from matching the original input distribution.
-
-### Evaluation
-
-- [ ] Accuracy
-- [ ] Precision
-- [ ] Recall
-- [ ] ROC-AUC
-- [ ] Confusion Matrix
-
-### Explainability
-
-- [ ] Grad-CAM visualization
-- [ ] Error analysis
+- [ ] Class Imbalance
 
 ---
 
