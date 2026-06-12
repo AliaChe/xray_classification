@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
+from sklearn.metrics import classification_report
 
 def plot_history(history):
 
@@ -32,6 +33,14 @@ def plot_confusion_matrix(model, test_ds, class_names):
         y_true.extend(labels.numpy())
         y_pred.extend(predictions)
 
+    print(
+        classification_report(
+            y_true,
+            y_pred,
+            target_names=class_names
+        )
+    )
+
     cm = confusion_matrix(y_true, y_pred)
 
     disp = ConfusionMatrixDisplay(
@@ -39,13 +48,11 @@ def plot_confusion_matrix(model, test_ds, class_names):
         display_labels=class_names
     )
 
-    fig, ax = plt.subplots(figsize=(6,6))
+    _, ax = plt.subplots(figsize=(6,6))
 
     disp.plot(ax=ax)
 
     plt.title("Confusion Matrix")
-
     plt.savefig("images/confusion_matrix.png")
-
     plt.show()
 

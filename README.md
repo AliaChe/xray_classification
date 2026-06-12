@@ -175,9 +175,9 @@ MobileNetV2 was pretrained on ImageNet using this preprocessing pipeline and sho
 
 ## Results
 
-Coming soon.
+![Confusion Matrix](images/confusion_matrix.png)
 
----
+![Training Curves](images/training_curve.png)
 
 ## License
 
