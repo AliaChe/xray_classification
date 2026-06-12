@@ -5,6 +5,7 @@ data:
 
 training:
   batch_size: 32
-  epochs: 10
+  epochs: 20
   learning_rate: 0.001
   seed: 42
+  patience: 3
