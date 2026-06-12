@@ -1,5 +1,7 @@
 import tensorflow as tf
-
+from pathlib import Path
+import numpy as np
+from sklearn.utils.class_weight import compute_class_weight
 
 def load_datasets(config):
 
@@ -44,3 +46,24 @@ def load_datasets(config):
     test_ds = test_ds.prefetch(AUTOTUNE)
 
     return train_ds, val_ds, test_ds, class_names
+
+
+def compute_weights(train_path, class_names):
+
+    labels = []
+
+    for idx, class_name in enumerate(class_names):
+
+        class_dir = Path(train_path) / class_name
+
+        n_images = len(list(class_dir.glob("*")))
+
+        labels.extend([idx] * n_images)
+
+    weights = compute_class_weight(
+        class_weight="balanced",
+        classes=np.unique(labels),
+        y=labels
+    )
+
+    return dict(enumerate(weights))
