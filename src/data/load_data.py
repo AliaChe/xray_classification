@@ -5,7 +5,7 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.utils import image_dataset_from_directory
 from tensorflow.data import AUTOTUNE
 
-def load_datasets(config):
+def load_raw_datasets(config):
 
     image_size = (
         config["data"]["image_size"],
@@ -40,6 +40,12 @@ def load_datasets(config):
     )
 
     class_names = train_ds.class_names
+
+    return train_ds, val_ds, test_ds, class_names
+
+
+def load_datasets(config):
+    train_ds, val_ds, test_ds, class_names = load_raw_datasets(config)
 
     train_ds = preprocess_dataset(train_ds)
     val_ds = preprocess_dataset(val_ds)

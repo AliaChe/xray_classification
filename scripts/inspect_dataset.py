@@ -2,7 +2,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from pathlib import Path
 from collections import Counter
-from src.data.load_data import load_datasets
+from src.data.load_data import load_raw_datasets
 from src.utils.load_config import load_config
 
 def print_dataset_info(train_ds, val_ds, test_ds, class_names):
@@ -79,7 +79,7 @@ def plot_class_distribution(counts):
 def main():
     config = load_config()
 
-    train_ds, val_ds, test_ds, class_names = load_datasets(config)
+    train_ds, val_ds, test_ds, class_names = load_raw_datasets(config)
 
     print_dataset_info(
         train_ds,
