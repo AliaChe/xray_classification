@@ -1,26 +1,21 @@
-# Pneumonia Detection from Chest X-Rays
+# Chest X-Ray Pneumonia Classification
 
-Deep learning project for binary classification of chest X-ray images:
+A deep learning project for automated pneumonia detection from chest X-ray images using TensorFlow and transfer learning.
 
-- NORMAL
-- PNEUMONIA
+## Overview
 
-The goal is to build a robust medical image classification pipeline using TensorFlow and transfer learning.
+This project uses a pre-trained MobileNetV2 convolutional neural network to classify chest X-ray images into two categories:
 
----
+* NORMAL
+* PNEUMONIA
+
+The objective is to build a complete machine learning pipeline, from data loading and training to model evaluation and deployment.
 
 ## Dataset
 
-Dataset:
+Dataset: Chest X-Ray Images (Pneumonia)
 
-- Chest X-Ray Pneumonia Dataset (Kaggle)
-
-Classes:
-
-- NORMAL
-- PNEUMONIA
-
-Directory structure:
+Structure:
 
 ```text
 data/raw/chest_xray/
@@ -35,55 +30,102 @@ data/raw/chest_xray/
     └── PNEUMONIA/
 ```
 
----
+Training set distribution:
+
+| Class     | Images |
+| --------- | -----: |
+| NORMAL    |  1,341 |
+| PNEUMONIA |  3,875 |
+
+The dataset is highly imbalanced, with approximately 74% pneumonia images.
+
+## Model
+
+### Architecture
+
+* MobileNetV2 (ImageNet pre-trained)
+* Transfer Learning
+* GlobalAveragePooling2D
+* Dropout
+* Dense(1, sigmoid)
+
+### Training
+
+* TensorFlow / Keras
+* Binary Cross-Entropy
+* Adam Optimizer
+* EarlyStopping
+* ModelCheckpoint
+* Class Weights for imbalance handling
+
+## Results
+
+### Training Curves
+
+![Training Curves](images/training_curves.png)
+
+### Confusion Matrix
+
+![Confusion Matrix](images/confusion_matrix.png)
+
+### ROC Curve
+
+![ROC Curve](images/roc_curve.png)
+
+### Classification Report
+
+```text
+              precision    recall  f1-score   support
+
+NORMAL            0.96      0.60      0.74       234
+PNEUMONIA         0.80      0.98      0.88       390
+
+accuracy                              0.84       624
+macro avg         0.88      0.79      0.81       624
+weighted avg      0.86      0.84      0.83       624
+```
+
+### Observations
+
+* The model achieves strong pneumonia detection performance.
+* Recall for pneumonia is very high (98%).
+* The dataset is significantly imbalanced.
+* The model tends to over-predict the pneumonia class.
 
 ## Project Structure
 
 ```text
 .
-├── configs
-│   └── config.yaml
-├── data
-│   └── raw
-├── images
-├── notebooks
-│   └── exploration.ipynb
-├── saved_models
-├── scripts
-│   └── inspect_dataset.py
-└── src
-    ├── data
-    │   └── load_data.py
-    ├── models
-    │   └── cnn_model.py
+├── configs/
+├── data/
+├── images/
+├── notebooks/
+├── saved_models/
+├── scripts/
+└── src/
+    ├── data/
+    ├── models/
+    ├── utils/
     ├── evaluate.py
-    ├── train.py
-    └── utils
-        └── load_config.py
+    └── train.py
 ```
-
----
 
 ## Installation
 
-Create a virtual environment:
-
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-```
+git clone <repo-url>
+cd xray_classification
 
-Install dependencies:
-
-```bash
 pip install -r requirements.txt
 ```
 
----
+## Training
 
-## Dataset Exploration
+```bash
+python -m src.train
+```
 
-Inspect the dataset:
+## Dataset Inspection
 
 ```bash
 python -m scripts.inspect_dataset
@@ -98,50 +140,28 @@ Current exploration includes:
 
 ---
 
-## Training
+## Future Improvements
 
-Training script:
+- Optimize threshold for binary classification.
+- Analyze false positives and false negatives.
+- Experiment with data augmentation strategies.
+- Fine-tune the pre-trained MobileNetV2 layers.
 
-```bash
-python -m src.train
-```
+## Next steps
 
-Current model:
+- Build an inference pipeline for single-image predictions.
+- Expose the model through a FastAPI service.
+- Containerize the application with Docker.
+- Deploy the service to AWS.
+- Add automated testing and CI/CD workflows.
 
-- TensorFlow
-- MobileNetV2 (ImageNet pretrained)
-- Binary classification head
-- Transfer learning
+## Tech Stack
 
----
-
-## Current Status
-
-### Completed
-
-- [x] Dataset download and cleanup
-- [x] Dataset exploration
-- [x] TensorFlow dataloaders
-- [x] Train / validation split
-- [x] MobileNetV2 baseline architecture
-- [x] First training run
-- [x] Evaluation pipeline
-- [x] Confusion matrix
-- [x] Training curves
-
-### In Progress
-
-- [ ] Benchmarking
-- [ ] Class Imbalance
-
----
-
-## Results
-
-![Confusion Matrix](images/confusion_matrix.png)
-
-![Training Curves](images/training_curve.png)
-
-## License
-
-MIT
+* Python
+* TensorFlow / Keras
+* NumPy
+* Matplotlib
+* Scikit-learn
+* YAML
+* Git
+* GitHub
