@@ -1,7 +1,9 @@
-import tensorflow as tf
 from pathlib import Path
 import numpy as np
 from sklearn.utils.class_weight import compute_class_weight
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+from tensorflow.keras.utils import image_dataset_from_directory
+from tensorflow.data import AUTOTUNE
 
 def load_datasets(config):
 
@@ -12,7 +14,7 @@ def load_datasets(config):
 
     batch_size = config["training"]["batch_size"]
 
-    train_ds = tf.keras.utils.image_dataset_from_directory(
+    train_ds = image_dataset_from_directory(
         config["data"]["path"],
         validation_split=config["data"]["validation_split"],
         subset="training",
@@ -21,7 +23,7 @@ def load_datasets(config):
         batch_size=batch_size
     )
 
-    val_ds = tf.keras.utils.image_dataset_from_directory(
+    val_ds = image_dataset_from_directory(
         config["data"]["path"],
         validation_split=config["data"]["validation_split"],
         subset="validation",
@@ -30,7 +32,7 @@ def load_datasets(config):
         batch_size=batch_size
     )
 
-    test_ds = tf.keras.utils.image_dataset_from_directory(
+    test_ds = image_dataset_from_directory(
         "data/raw/chest_xray/test",
         image_size=image_size,
         batch_size=batch_size,
@@ -39,7 +41,9 @@ def load_datasets(config):
 
     class_names = train_ds.class_names
 
-    AUTOTUNE = tf.data.AUTOTUNE
+    train_ds = preprocess_dataset(train_ds)
+    val_ds = preprocess_dataset(val_ds)
+    test_ds = preprocess_dataset(test_ds)
 
     train_ds = train_ds.prefetch(AUTOTUNE)
     val_ds = val_ds.prefetch(AUTOTUNE)
@@ -67,3 +71,10 @@ def compute_weights(train_path, class_names):
     )
 
     return dict(enumerate(weights))
+
+
+def preprocess_dataset(dataset):
+    return dataset.map(
+        lambda x, y: (preprocess_input(x), y),
+        num_parallel_calls=AUTOTUNE
+    )

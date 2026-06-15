@@ -1,6 +1,5 @@
 import tensorflow as tf
 from tensorflow.keras import layers, models
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
 
 def build_model(config):
@@ -16,7 +15,6 @@ def build_model(config):
     base_model.trainable = False
 
     model = models.Sequential([
-        layers.Lambda(preprocess_input),
 
         base_model,
 
