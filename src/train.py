@@ -40,8 +40,6 @@ history = model.fit(
     callbacks=training_callbacks
 )
 
-model.save("saved_models/mobilenet_baseline.keras")
-
 test_loss, test_acc = model.evaluate(test_ds)
 
 print("Test accuracy:", test_acc)

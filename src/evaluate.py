@@ -1,10 +1,9 @@
 import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.metrics import classification_report
-
 from pathlib import Path
-import matplotlib.pyplot as plt
 
 Path("images").mkdir(exist_ok=True)
 
@@ -33,19 +32,16 @@ def plot_history(history):
     plt.show()
 
 
-def plot_confusion_matrix(model, test_ds, class_names):
+def plot_confusion_matrix(
+    model,
+    test_ds,
+    class_names,
+    threshold=0.5
+):
 
-    y_true = []
-    y_pred = []
+    y_true, y_scores = get_predictions(model, test_ds)
 
-    for images, labels in test_ds:
-
-        predictions = model.predict(images, verbose=0)
-
-        predictions = (predictions > 0.5).astype(int).flatten()
-
-        y_true.extend(labels.numpy())
-        y_pred.extend(predictions)
+    y_pred = (y_scores > threshold).astype(int)
 
     print(
         classification_report(
@@ -66,7 +62,27 @@ def plot_confusion_matrix(model, test_ds, class_names):
 
     disp.plot(ax=ax)
 
-    plt.title("Confusion Matrix")
+    plt.title(f"Confusion Matrix (threshold={threshold})")
     plt.savefig("images/confusion_matrix.png")
     plt.show()
 
+
+def get_predictions(model, test_ds):
+
+    y_true = []
+    y_scores = []
+
+    for images, labels in test_ds:
+
+        scores = model.predict(
+            images,
+            verbose=0
+        ).flatten()
+
+        y_true.extend(labels.numpy())
+        y_scores.extend(scores)
+
+    return (
+        np.array(y_true),
+        np.array(y_scores)
+    )
