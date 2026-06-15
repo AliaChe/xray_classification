@@ -2,8 +2,12 @@ from tensorflow.keras import callbacks
 from src.data.load_data import load_datasets
 from src.models.cnn_model import build_model
 from src.utils.load_config import load_config
-from src.evaluate import plot_history, plot_confusion_matrix
 from src.data.load_data import compute_weights
+from src.evaluate import (
+    plot_history,
+    plot_confusion_matrix,
+    plot_roc_curve
+)
 
 config = load_config()
 
@@ -43,9 +47,14 @@ history = model.fit(
 test_loss, test_acc = model.evaluate(test_ds)
 
 print("Test accuracy:", test_acc)
+
 plot_history(history)
+
 plot_confusion_matrix(
     model,
     test_ds,
-    class_names
+    class_names,
+    threshold=0.5
 )
+
+plot_roc_curve(model, test_ds)

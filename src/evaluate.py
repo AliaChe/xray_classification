@@ -1,9 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import ConfusionMatrixDisplay
-from sklearn.metrics import classification_report
 from pathlib import Path
+from sklearn.metrics import (
+    confusion_matrix,
+    ConfusionMatrixDisplay,
+    classification_report,
+    roc_curve,
+    auc
+)
 
 Path("images").mkdir(exist_ok=True)
 
@@ -86,3 +90,27 @@ def get_predictions(model, test_ds):
         np.array(y_true),
         np.array(y_scores)
     )
+
+
+def plot_roc_curve(model, test_ds):
+    y_true, y_scores = get_predictions(model, test_ds)
+
+    fpr, tpr, thresholds = roc_curve(y_true, y_scores)
+    roc_auc = auc(fpr, tpr)
+
+    plt.figure(figsize=(6, 6))
+    plt.plot(fpr, tpr, label=f"AUC = {roc_auc:.3f}")
+    plt.plot([0, 1], [0, 1], linestyle="--")
+
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+    plt.title("ROC Curve")
+    plt.legend()
+
+    plt.tight_layout()
+    plt.savefig("images/roc_curve.png", dpi=150)
+    plt.show()
+
+    print(f"ROC AUC: {roc_auc:.4f}")
+
+    return fpr, tpr, thresholds
