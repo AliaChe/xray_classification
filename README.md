@@ -140,6 +140,49 @@ Current exploration includes:
 
 ---
 
+## Inference
+
+The project includes a standalone inference pipeline for predicting pneumonia from a single chest X-ray image.
+
+Run:
+
+```bash
+python -m src.predict path/to/image.jpeg
+```
+
+Example:
+
+```bash
+python -m src.predict data/raw/chest_xray/test/PNEUMONIA/person1_virus_6.jpeg
+```
+
+Output:
+
+```text
+Prediction: PNEUMONIA
+Confidence: 94.2%
+Raw pneumonia score: 0.9421
+```
+
+### Inference Pipeline
+
+```text
+Chest X-Ray Image
+        ↓
+Resize (224 × 224)
+        ↓
+MobileNetV2 preprocess_input()
+        ↓
+Loaded Keras Model
+        ↓
+Sigmoid Probability
+        ↓
+NORMAL / PNEUMONIA
+```
+
+The inference pipeline uses the same preprocessing steps as training to ensure consistent predictions.
+
+
 ## Future Improvements
 
 - Optimize threshold for binary classification.
@@ -149,7 +192,6 @@ Current exploration includes:
 
 ## Next steps
 
-- Build an inference pipeline for single-image predictions.
 - Expose the model through a FastAPI service.
 - Containerize the application with Docker.
 - Deploy the service to AWS.
