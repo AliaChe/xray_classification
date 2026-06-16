@@ -5,6 +5,7 @@ import tensorflow as tf
 from fastapi import FastAPI
 from fastapi import UploadFile
 from fastapi import File
+from fastapi import HTTPException
 
 from src.predict import predict_image
 
@@ -31,14 +32,35 @@ def health():
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
 
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=400,
+            detail="File must be an image."
+        )
+
+    contents = await file.read()
+
+    if len(contents) == 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Empty file."
+        )
+
     temp_path = Path("tmp") / file.filename
 
     with open(temp_path, "wb") as buffer:
-        buffer.write(await file.read())
+        buffer.write(contents)
 
-    result = predict_image(
-        model=model,
-        image_path=temp_path
-    )
+    try:
 
-    return result
+        result = predict_image(
+            model=model,
+            image_path=temp_path
+        )
+        
+        return result
+    
+    finally:
+
+        if temp_path.exists():
+            temp_path.unlink()
