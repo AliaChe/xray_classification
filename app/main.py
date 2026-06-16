@@ -1,13 +1,16 @@
 from pathlib import Path
-
 import tensorflow as tf
-
 from fastapi import FastAPI
 from fastapi import UploadFile
 from fastapi import File
 from fastapi import HTTPException
-
+from pydantic import BaseModel
 from src.predict import predict_image
+
+class PredictionResponse(BaseModel):
+    prediction: str
+    confidence: float
+    raw_score: float
 
 app = FastAPI()
 
@@ -29,7 +32,7 @@ def health():
         "status": "ok"
     }
 
-@app.post("/predict")
+@app.post("/predict", response_model=PredictionResponse)
 async def predict(file: UploadFile = File(...)):
 
     if not file.content_type.startswith("image/"):
