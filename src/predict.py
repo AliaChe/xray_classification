@@ -27,8 +27,7 @@ def load_image(image_path, image_size):
     return img_array
 
 
-def predict_image(model_path, image_path, image_size=224, threshold=0.5):
-    model = tf.keras.models.load_model(model_path)
+def predict_image(model, image_path, image_size=224, threshold=0.5):
 
     img_array = load_image(image_path, image_size)
 
@@ -38,7 +37,11 @@ def predict_image(model_path, image_path, image_size=224, threshold=0.5):
 
     confidence = score if predicted_label == "PNEUMONIA" else 1 - score
 
-    return predicted_label, confidence, score
+    return {
+        "prediction": predicted_label,
+        "confidence": float(confidence),
+        "raw_score": float(score)
+    }
 
 
 def main():
@@ -80,16 +83,18 @@ def main():
     if not image_path.exists():
         raise FileNotFoundError(f"Image not found: {image_path}")
 
-    label, confidence, raw_score = predict_image(
-        model_path=args.model_path,
-        image_path=image_path,
-        image_size=args.image_size,
-        threshold=args.threshold
-    )
+    model = tf.keras.models.load_model(args.model_path)
 
-    print(f"Prediction: {label}")
-    print(f"Confidence: {confidence:.2%}")
-    print(f"Raw pneumonia score: {raw_score:.4f}")
+    result = predict_image(
+                model=model,
+                image_path=image_path,
+                image_size=args.image_size,
+                threshold=args.threshold
+            )
+
+    print(f"Prediction: {result['prediction']}")
+    print(f"Confidence: {result['confidence']:.2%}")
+    print(f"Raw score: {result['raw_score']:.4f}")
 
 
 if __name__ == "__main__":
