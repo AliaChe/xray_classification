@@ -124,6 +124,13 @@ pip install -r requirements.txt
 ```bash
 python -m src.train
 ```
+The trained model is saved to:
+
+```text
+saved_models/best_model.keras
+```
+
+This artifact is required for inference, FastAPI serving, and Docker deployment.
 
 ## Dataset Inspection
 
@@ -182,20 +189,124 @@ NORMAL / PNEUMONIA
 
 The inference pipeline uses the same preprocessing steps as training to ensure consistent predictions.
 
+## Deployment
+
+### FastAPI API
+
+The project includes a FastAPI application exposing the trained model through a REST API.
+
+Run locally:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Swagger documentation:
+
+```text
+http://localhost:8000/docs
+```
+
+### API Endpoints
+
+#### Health Check
+
+```http
+GET /health
+```
+
+Response:
+
+```json
+{
+  "status": "ok"
+}
+```
+
+#### Predict Pneumonia
+
+```http
+POST /predict
+```
+
+Upload a chest X-ray image and receive a prediction:
+
+```json
+{
+  "prediction": "PNEUMONIA",
+  "confidence": 0.94,
+  "raw_score": 0.94
+}
+```
+
+Input validation includes:
+
+* image type validation
+* empty file validation
+* automatic temporary file cleanup
+
+---
+
+## Docker
+
+Before building the Docker image, ensure that a trained model exists:
+
+```text
+saved_models/best_model.keras
+```
+
+If not, train the model first:
+
+```bash
+python -m src.train
+```
+
+Build the Docker image:
+
+```bash
+docker build -t xray-api .
+```
+
+Run the container:
+
+```bash
+docker run -p 8000:8000 xray-api
+```
+
+The API will be available at:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+## Docker Hub
+
+The application image is published on Docker Hub and can be pulled directly:
+
+```bash
+docker pull <dockerhub-username>/xray-api:latest
+```
+
+Run:
+
+```bash
+docker run -p 8000:8000 <dockerhub-username>/xray-api:latest
+```
 
 ## Future Improvements
 
-- Optimize threshold for binary classification.
-- Analyze false positives and false negatives.
+- Perform detailed error analysis.
 - Experiment with data augmentation strategies.
-- Fine-tune the pre-trained MobileNetV2 layers.
+- Fine-tune the MobileNetV2 backbone.
+- Adjust threshold for binary classification to improve model performance on the NORMAL class.
 
 ## Next steps
 
-- Expose the model through a FastAPI service.
-- Containerize the application with Docker.
 - Deploy the service to AWS.
 - Add automated testing and CI/CD workflows.
+- Add model monitoring and logging.
 
 ## Tech Stack
 
