@@ -295,6 +295,22 @@ Run:
 docker run -p 8000:8000 <dockerhub-username>/xray-api:latest
 ```
 
+## AWS Deployment
+
+The application is containerized with Docker and deployed on an AWS EC2 instance.
+
+The deployment workflow is:
+
+Training
+→ Saved Keras Model
+→ Docker Image
+→ Docker Hub
+→ AWS EC2
+→ FastAPI Service
+
+The API is exposed through FastAPI and can be accessed via the public EC2 IP address.
+![AWS Deployment](images/swagger_EC2.png)
+
 ## Future Improvements
 
 - Perform detailed error analysis.
@@ -304,7 +320,6 @@ docker run -p 8000:8000 <dockerhub-username>/xray-api:latest
 
 ## Next steps
 
-- Deploy the service to AWS.
 - Add automated testing and CI/CD workflows.
 - Add model monitoring and logging.
 
