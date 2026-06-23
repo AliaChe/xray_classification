@@ -23,7 +23,7 @@ Path("tmp").mkdir(exist_ok=True)
 @app.get("/")
 def root():
     return {
-        "message": "Chest X-Ray API"
+        "message": "Chest X-Ray Classification API"
     }
 
 @app.get("/health")
