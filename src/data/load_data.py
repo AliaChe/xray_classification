@@ -5,12 +5,10 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.utils import image_dataset_from_directory
 from tensorflow.data import AUTOTUNE
 
+
 def load_raw_datasets(config):
 
-    image_size = (
-        config["data"]["image_size"],
-        config["data"]["image_size"]
-    )
+    image_size = (config["data"]["image_size"], config["data"]["image_size"])
 
     batch_size = config["training"]["batch_size"]
 
@@ -20,7 +18,7 @@ def load_raw_datasets(config):
         subset="training",
         seed=config["training"]["seed"],
         image_size=image_size,
-        batch_size=batch_size
+        batch_size=batch_size,
     )
 
     val_ds = image_dataset_from_directory(
@@ -29,14 +27,14 @@ def load_raw_datasets(config):
         subset="validation",
         seed=config["training"]["seed"],
         image_size=image_size,
-        batch_size=batch_size
+        batch_size=batch_size,
     )
 
     test_ds = image_dataset_from_directory(
         "data/raw/chest_xray/test",
         image_size=image_size,
         batch_size=batch_size,
-        shuffle=False
+        shuffle=False,
     )
 
     class_names = train_ds.class_names
@@ -63,7 +61,6 @@ def compute_weights(train_path, class_names):
     labels = []
 
     for idx, class_name in enumerate(class_names):
-
         class_dir = Path(train_path) / class_name
 
         n_images = len(list(class_dir.glob("*")))
@@ -71,9 +68,7 @@ def compute_weights(train_path, class_names):
         labels.extend([idx] * n_images)
 
     weights = compute_class_weight(
-        class_weight="balanced",
-        classes=np.unique(labels),
-        y=labels
+        class_weight="balanced", classes=np.unique(labels), y=labels
     )
 
     return dict(enumerate(weights))
@@ -81,6 +76,5 @@ def compute_weights(train_path, class_names):
 
 def preprocess_dataset(dataset):
     return dataset.map(
-        lambda x, y: (preprocess_input(x), y),
-        num_parallel_calls=AUTOTUNE
+        lambda x, y: (preprocess_input(x), y), num_parallel_calls=AUTOTUNE
     )

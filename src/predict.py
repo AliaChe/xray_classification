@@ -11,10 +11,7 @@ CLASS_NAMES = ["NORMAL", "PNEUMONIA"]
 
 
 def load_image(image_path, image_size):
-    img = image.load_img(
-        image_path,
-        target_size=(image_size, image_size)
-    )
+    img = image.load_img(image_path, target_size=(image_size, image_size))
 
     img_array = image.img_to_array(img)
 
@@ -40,7 +37,7 @@ def predict_image(model, image_path, image_size=224, threshold=0.5):
     return {
         "prediction": predicted_label,
         "confidence": float(confidence),
-        "raw_score": float(score)
+        "raw_score": float(score),
     }
 
 
@@ -49,31 +46,22 @@ def main():
         description="Predict pneumonia from a chest X-ray image."
     )
 
-    parser.add_argument(
-        "image_path",
-        type=str,
-        help="Path to the chest X-ray image."
-    )
+    parser.add_argument("image_path", type=str, help="Path to the chest X-ray image.")
 
     parser.add_argument(
         "--model-path",
         type=str,
         default="saved_models/best_model.keras",
-        help="Path to the trained Keras model."
+        help="Path to the trained Keras model.",
     )
 
-    parser.add_argument(
-        "--image-size",
-        type=int,
-        default=224,
-        help="Input image size."
-    )
+    parser.add_argument("--image-size", type=int, default=224, help="Input image size.")
 
     parser.add_argument(
         "--threshold",
         type=float,
         default=0.5,
-        help="Decision threshold for pneumonia class."
+        help="Decision threshold for pneumonia class.",
     )
 
     args = parser.parse_args()
@@ -86,11 +74,11 @@ def main():
     model = tf.keras.models.load_model(args.model_path)
 
     result = predict_image(
-                model=model,
-                image_path=image_path,
-                image_size=args.image_size,
-                threshold=args.threshold
-            )
+        model=model,
+        image_path=image_path,
+        image_size=args.image_size,
+        threshold=args.threshold,
+    )
 
     print(f"Prediction: {result['prediction']}")
     print(f"Confidence: {result['confidence']:.2%}")

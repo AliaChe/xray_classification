@@ -7,47 +7,40 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 from src.predict import predict_image
 
+
 class PredictionResponse(BaseModel):
     prediction: str
     confidence: float
     raw_score: float
 
+
 app = FastAPI()
 
-model = tf.keras.models.load_model(
-    "saved_models/best_model.keras"
-)
+model = tf.keras.models.load_model("saved_models/best_model.keras")
 
 Path("tmp").mkdir(exist_ok=True)
 
+
 @app.get("/")
 def root():
-    return {
-        "message": "Chest X-Ray Classification API"
-    }
+    return {"message": "Chest X-Ray Classification API"}
+
 
 @app.get("/health")
 def health():
-    return {
-        "status": "ok"
-    }
+    return {"status": "ok"}
+
 
 @app.post("/predict", response_model=PredictionResponse)
 async def predict(file: UploadFile = File(...)):
 
     if not file.content_type.startswith("image/"):
-        raise HTTPException(
-            status_code=400,
-            detail="File must be an image."
-        )
+        raise HTTPException(status_code=400, detail="File must be an image.")
 
     contents = await file.read()
 
     if len(contents) == 0:
-        raise HTTPException(
-            status_code=400,
-            detail="Empty file."
-        )
+        raise HTTPException(status_code=400, detail="Empty file.")
 
     temp_path = Path("tmp") / file.filename
 
@@ -55,15 +48,10 @@ async def predict(file: UploadFile = File(...)):
         buffer.write(contents)
 
     try:
+        result = predict_image(model=model, image_path=temp_path)
 
-        result = predict_image(
-            model=model,
-            image_path=temp_path
-        )
-        
         return result
-    
-    finally:
 
+    finally:
         if temp_path.exists():
             temp_path.unlink()

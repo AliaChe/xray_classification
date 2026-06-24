@@ -5,6 +5,7 @@ from collections import Counter
 from src.data.load_data import load_raw_datasets
 from src.utils.load_config import load_config
 
+
 def print_dataset_info(train_ds, val_ds, test_ds, class_names):
     print("\n=== Dataset Information ===")
 
@@ -52,11 +53,7 @@ def analyze_class_distribution(train_path):
     total = sum(counts.values())
 
     for class_name, count in counts.items():
-        print(
-            f"{class_name}: "
-            f"{count} images "
-            f"({count / total:.2%})"
-        )
+        print(f"{class_name}: {count} images ({count / total:.2%})")
 
     return counts
 
@@ -64,10 +61,7 @@ def analyze_class_distribution(train_path):
 def plot_class_distribution(counts):
     plt.figure(figsize=(6, 4))
 
-    plt.bar(
-        counts.keys(),
-        counts.values()
-    )
+    plt.bar(counts.keys(), counts.values())
 
     plt.title("Class Distribution")
     plt.ylabel("Number of Images")
@@ -81,24 +75,13 @@ def main():
 
     train_ds, val_ds, test_ds, class_names = load_raw_datasets(config)
 
-    print_dataset_info(
-        train_ds,
-        val_ds,
-        test_ds,
-        class_names
-    )
+    print_dataset_info(train_ds, val_ds, test_ds, class_names)
 
     images, labels = inspect_batch(train_ds)
 
-    plot_samples(
-        images,
-        labels,
-        class_names
-    )
+    plot_samples(images, labels, class_names)
 
-    counts = analyze_class_distribution(
-        config["data"]["path"]
-    )
+    counts = analyze_class_distribution(config["data"]["path"])
 
     plot_class_distribution(counts)
 

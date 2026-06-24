@@ -6,7 +6,7 @@ from sklearn.metrics import (
     ConfusionMatrixDisplay,
     classification_report,
     roc_curve,
-    auc
+    auc,
 )
 
 Path("images").mkdir(exist_ok=True)
@@ -36,33 +36,19 @@ def plot_history(history):
     plt.show()
 
 
-def plot_confusion_matrix(
-    model,
-    test_ds,
-    class_names,
-    threshold=0.5
-):
+def plot_confusion_matrix(model, test_ds, class_names, threshold=0.5):
 
     y_true, y_scores = get_predictions(model, test_ds)
 
     y_pred = (y_scores > threshold).astype(int)
 
-    print(
-        classification_report(
-            y_true,
-            y_pred,
-            target_names=class_names
-        )
-    )
+    print(classification_report(y_true, y_pred, target_names=class_names))
 
     cm = confusion_matrix(y_true, y_pred)
 
-    disp = ConfusionMatrixDisplay(
-        confusion_matrix=cm,
-        display_labels=class_names
-    )
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
 
-    _, ax = plt.subplots(figsize=(6,6))
+    _, ax = plt.subplots(figsize=(6, 6))
 
     disp.plot(ax=ax)
 
@@ -77,19 +63,12 @@ def get_predictions(model, test_ds):
     y_scores = []
 
     for images, labels in test_ds:
-
-        scores = model.predict(
-            images,
-            verbose=0
-        ).flatten()
+        scores = model.predict(images, verbose=0).flatten()
 
         y_true.extend(labels.numpy())
         y_scores.extend(scores)
 
-    return (
-        np.array(y_true),
-        np.array(y_scores)
-    )
+    return (np.array(y_true), np.array(y_scores))
 
 
 def plot_roc_curve(model, test_ds):
