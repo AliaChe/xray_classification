@@ -41,3 +41,26 @@ jobs:
 
       - name: Push Docker image
         run: docker push alia123/xray-api:latest
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script:
+            docker stop xray-api || true
+
+            docker rm xray-api || true
+
+            docker rmi alia123/xray-api:latest || true
+
+            docker image prune -f
+
+            docker pull alia123/xray-api:latest
+
+            docker run -d \
+              --name xray-api \
+              --restart unless-stopped \
+              -p 8000:8000 \
+              alia123/xray-api:latest
