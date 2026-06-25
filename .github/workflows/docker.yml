@@ -37,10 +37,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t alia123/xray-api:latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/xray-api:latest .
 
       - name: Push Docker image
-        run: docker push alia123/xray-api:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/xray-api:latest
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.2.2
@@ -48,19 +48,19 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script:
+          script: |
             docker stop xray-api || true
 
             docker rm xray-api || true
 
-            docker rmi alia123/xray-api:latest || true
+            docker rmi ${{ secrets.DOCKER_USERNAME }}/xray-api:latest || true
 
-            docker image prune -f
-
-            docker pull alia123/xray-api:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/xray-api:latest
 
             docker run -d \
               --name xray-api \
               --restart unless-stopped \
               -p 8000:8000 \
-              alia123/xray-api:latest
+              ${{ secrets.DOCKER_USERNAME }}/xray-api:latest
+
+            docker image prune -f
