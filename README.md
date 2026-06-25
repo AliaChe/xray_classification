@@ -110,16 +110,14 @@ weighted avg      0.86      0.84      0.83       624
     └── train.py
 ```
 
-## Installation
+## Training
 
 ```bash
 git clone <repo-url>
 cd xray_classification
 
-pip install -r requirements.txt
+pip install -r requirements/train.txt
 ```
-
-## Training
 
 ```bash
 python -m src.train
@@ -311,6 +309,21 @@ Training
 The API is exposed through FastAPI and can be accessed via the public EC2 IP address.
 ![AWS Deployment](images/swagger_EC2.png)
 
+## Continuous Integration
+
+The project uses GitHub Actions to automatically validate every push.
+
+The CI pipeline performs the following steps:
+
+1. Set up Python 3.10
+2. Install development dependencies
+3. Run Ruff for static code analysis
+4. Run Pytest
+5. Build the Docker image
+6. Push the image to Docker Hub
+
+Only if all checks pass is the Docker image published.
+
 ## Future Improvements
 
 - Perform detailed error analysis.
@@ -320,7 +333,7 @@ The API is exposed through FastAPI and can be accessed via the public EC2 IP add
 
 ## Next steps
 
-- Add automated testing and CI/CD workflows.
+- Add CD workflow.
 - Add model monitoring and logging.
 
 ## Tech Stack
