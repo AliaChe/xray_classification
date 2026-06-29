@@ -6,6 +6,7 @@
 ![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED)
 ![AWS](https://img.shields.io/badge/AWS-EC2-FF9900)
 ![CI/CD](https://img.shields.io/badge/CI/CD-GitHub_Actions-black)
+[![CI/CD](https://github.com/AliaChe/xray_classification/actions/workflows/docker.yml/badge.svg)](https://github.com/AliaChe/xray_classification/actions/workflows/docker.yml)
 
 An end-to-end **MLOps project** for automated pneumonia detection from chest X-ray images using **TensorFlow**, **FastAPI**, **Docker**, **GitHub Actions**, and **AWS EC2**.
 
