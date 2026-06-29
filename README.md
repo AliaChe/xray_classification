@@ -1,19 +1,119 @@
-# Chest X-Ray Pneumonia Classification
+# 🩻 Chest X-Ray Pneumonia Classification
 
-A deep learning project for automated pneumonia detection from chest X-ray images using TensorFlow and transfer learning.
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-2.18-orange)
+![FastAPI](https://img.shields.io/badge/FastAPI-REST_API-009688)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED)
+![AWS](https://img.shields.io/badge/AWS-EC2-FF9900)
+![CI/CD](https://img.shields.io/badge/CI/CD-GitHub_Actions-black)
 
-## Overview
+An end-to-end **MLOps project** for automated pneumonia detection from chest X-ray images using **TensorFlow**, **FastAPI**, **Docker**, **GitHub Actions**, and **AWS EC2**.
 
-This project uses a pre-trained MobileNetV2 convolutional neural network to classify chest X-ray images into two categories:
+The project demonstrates the complete machine learning lifecycle, from data exploration and model training to cloud deployment with automated CI/CD.
 
-* NORMAL
-* PNEUMONIA
+---
 
-The objective is to build a complete machine learning pipeline, from data loading and training to model evaluation and deployment.
+# Table of Contents
 
-## Dataset
+## Table of Contents
 
-Dataset: Chest X-Ray Images (Pneumonia)
+- [Overview](#overview)
+- [Project Architecture](#project-architecture)
+- [Quick Start](#quick-start)
+- [Tech Stack](#tech-stack)
+- [Dataset](#dataset)
+- [Model Architecture ](#model-architecture)
+- [Model Performance](#model-performance)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Training](#training)
+- [Dataset Inspection](#dataset-inspection)
+- [Inference](#inference)
+- [FastAPI API](#fastapi-api)
+- [Docker](#docker)
+- [Docker Hub](#docker-hub)
+- [AWS Deployment](#aws-deployment)
+- [CI/CD](#cicd)
+- [Project Status](#project-status)
+- [Future Improvements](#future-improvements)
+- [License](#license)
+
+---
+
+# Overview
+
+This project classifies chest X-ray images into two classes:
+
+- NORMAL
+- PNEUMONIA
+
+using a transfer learning approach based on **MobileNetV2**.
+
+Beyond model training, the objective is to build a production-ready machine learning application including:
+
+- model serving
+- REST API
+- Docker containerization
+- automated testing
+- CI/CD
+- cloud deployment
+
+---
+
+# Project Architecture
+
+```mermaid
+flowchart TD
+    A[Chest X-Ray Dataset]--> B[TensorFlow Training]
+    B --> C[best_model.keras]
+    C --> D[FastAPI]
+    D --> E[Docker]
+    E --> F[GitHub Actions CI/CD]
+    F --> G[Docker Hub]
+    G --> H[AWS EC2]
+    H --> I[Swagger UI]
+```
+---
+
+# Quick Start
+
+```bash
+git clone https://github.com/alia123/xray_classification.git
+
+cd xray_classification
+
+pip install -r requirements/dev.txt
+
+uvicorn app.main:app --reload
+```
+
+Open:
+
+```
+http://localhost:8000/docs
+```
+
+# Tech Stack
+
+| Category | Technologies |
+|-----------|--------------|
+| Deep Learning | TensorFlow, Keras |
+| Backend | FastAPI |
+| API Documentation | Swagger UI |
+| Containerization | Docker |
+| Cloud | AWS EC2 |
+| CI/CD | GitHub Actions |
+| Testing | Pytest |
+| Linting | Ruff |
+| Data Science | NumPy, Matplotlib, Scikit-learn |
+| Configuration | YAML |
+| Version Control | Git, GitHub |
+
+---
+
+# Dataset
+
+Dataset: **Chest X-Ray Images (Pneumonia)**
 
 Structure:
 
@@ -39,40 +139,50 @@ Training set distribution:
 
 The dataset is highly imbalanced, with approximately 74% pneumonia images.
 
-## Model
+---
 
-### Architecture
+# Model Architecture
 
-* MobileNetV2 (ImageNet pre-trained)
-* Transfer Learning
-* GlobalAveragePooling2D
-* Dropout
-* Dense(1, sigmoid)
+## Architecture
 
-### Training
+- MobileNetV2 (ImageNet pretrained)
+- Transfer Learning
+- GlobalAveragePooling2D
+- Dropout
+- Dense(1, sigmoid)
 
-* TensorFlow / Keras
-* Binary Cross-Entropy
-* Adam Optimizer
-* EarlyStopping
-* ModelCheckpoint
-* Class Weights for imbalance handling
+## Training
 
-## Results
+- TensorFlow / Keras
+- Binary Cross-Entropy
+- Adam Optimizer
+- EarlyStopping
+- ModelCheckpoint
+- Class Weights
 
-### Training Curves
+---
 
-![Training Curves](images/training_curves.png)
+# Model Performance
+<h2>Training Curves</h2>
 
-### Confusion Matrix
+<p align="center">
+  <img src="images/training_curves.png" width="700">
+</p>
 
-![Confusion Matrix](images/confusion_matrix.png)
+<h2>Confusion Matrix</h2>
 
-### ROC Curve
+<p align="center">
+  <img src="images/confusion_matrix.png" width="450">
+</p>
 
-![ROC Curve](images/roc_curve.png)
+<h2>ROC Curve</h2>
 
-### Classification Report
+<p align="center">
+  <img src="images/roc_curve.png" width="500">
+</p>
+
+
+## Classification Report
 
 ```text
               precision    recall  f1-score   support
@@ -85,58 +195,86 @@ macro avg         0.88      0.79      0.81       624
 weighted avg      0.86      0.84      0.83       624
 ```
 
-### Observations
+### Key observations
 
-* The model achieves strong pneumonia detection performance.
-* Recall for pneumonia is very high (98%).
-* The dataset is significantly imbalanced.
-* The model tends to over-predict the pneumonia class.
+- High pneumonia recall (98%)
+- Good overall accuracy (84%)
+- Strong sensitivity for pneumonia detection
+- Slight tendency to over-predict pneumonia due to dataset imbalance
 
-## Project Structure
+---
+
+# Project Structure
 
 ```text
 .
+├── app/
 ├── configs/
 ├── data/
 ├── images/
 ├── notebooks/
+├── requirements/
+│   ├── base.txt
+│   ├── dev.txt
+│   ├── prod.txt
+│   └── train.txt
 ├── saved_models/
 ├── scripts/
-└── src/
-    ├── data/
-    ├── models/
-    ├── utils/
-    ├── evaluate.py
-    └── train.py
+├── src/
+├── tests/
+└── Dockerfile
 ```
 
-## Training
+---
+
+# Installation
+
+Clone the repository:
 
 ```bash
-git clone <repo-url>
-cd xray_classification
+git clone https://github.com/<username>/xray_classification.git
 
+cd xray_classification
+```
+
+Development environment:
+
+```bash
+pip install -r requirements/dev.txt
+```
+
+Training environment:
+
+```bash
 pip install -r requirements/train.txt
 ```
+
+---
+
+# Training
+
+Train the model:
 
 ```bash
 python -m src.train
 ```
-The trained model is saved to:
+
+The trained model is saved as:
 
 ```text
 saved_models/best_model.keras
 ```
+> **Note:** If `saved_models/best_model.keras` is missing, run the training command above before using the inference script, the FastAPI application, or building the Docker image.
 
-This artifact is required for inference, FastAPI serving, and Docker deployment.
+---
 
-## Dataset Inspection
+# Dataset Inspection
 
 ```bash
 python -m scripts.inspect_dataset
 ```
 
-Current exploration includes:
+Current inspection includes:
 
 - class distribution
 - sample visualization
@@ -145,7 +283,7 @@ Current exploration includes:
 
 ---
 
-## Inference
+# Inference
 
 The project includes a standalone inference pipeline for predicting pneumonia from a single chest X-ray image.
 
@@ -164,185 +302,197 @@ python -m src.predict data/raw/chest_xray/test/PNEUMONIA/person1_virus_6.jpeg
 Output:
 
 ```text
-Prediction: PNEUMONIA
-Confidence: 94.2%
-Raw pneumonia score: 0.9421
+Prediction : PNEUMONIA
+
+Confidence : 94.2%
+
+Raw score : 0.9421
 ```
 
 ### Inference Pipeline
 
 ```text
-Chest X-Ray Image
-        ↓
+Chest X-ray Image
+        │
+        ▼
 Resize (224 × 224)
-        ↓
-MobileNetV2 preprocess_input()
-        ↓
-Loaded Keras Model
-        ↓
-Sigmoid Probability
-        ↓
+        │
+        ▼
+MobileNetV2 preprocessing
+        │
+        ▼
+TensorFlow Model
+        │
+        ▼
+Sigmoid probability
+        │
+        ▼
 NORMAL / PNEUMONIA
 ```
 
-The inference pipeline uses the same preprocessing steps as training to ensure consistent predictions.
+The inference pipeline applies the same preprocessing steps used during training, ensuring consistency between training and inference.
 
-## Deployment
+---
 
-### FastAPI API
+# FastAPI API
 
-The project includes a FastAPI application exposing the trained model through a REST API.
-
-Run locally:
+Launch locally:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Swagger documentation:
+Swagger UI:
 
-```text
+```
 http://localhost:8000/docs
 ```
 
-### API Endpoints
+## Endpoints
 
-#### Health Check
-
-```http
-GET /health
-```
-
-Response:
-
-```json
-{
-  "status": "ok"
-}
-```
-
-#### Predict Pneumonia
-
-```http
-POST /predict
-```
-
-Upload a chest X-ray image and receive a prediction:
-
-```json
-{
-  "prediction": "PNEUMONIA",
-  "confidence": 0.94,
-  "raw_score": 0.94
-}
-```
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | / | Welcome message |
+| GET | /health | Health check |
+| POST | /predict | Predict pneumonia |
 
 Input validation includes:
 
-* image type validation
-* empty file validation
-* automatic temporary file cleanup
+- image validation
+- empty file validation
+- automatic temporary file cleanup
 
 ---
 
-## Docker
+# Docker
 
-Before building the Docker image, ensure that a trained model exists:
-
-```text
-saved_models/best_model.keras
-```
-
-If not, train the model first:
-
-```bash
-python -m src.train
-```
-
-Build the Docker image:
+Build:
 
 ```bash
 docker build -t xray-api .
 ```
 
-Run the container:
+Run:
 
 ```bash
 docker run -p 8000:8000 xray-api
 ```
 
-The API will be available at:
+Swagger:
 
-```text
+```
 http://localhost:8000/docs
 ```
 
 ---
 
-## Docker Hub
+# Docker Hub
 
-The application image is published on Docker Hub and can be pulled directly:
-
-```bash
-docker pull <dockerhub-username>/xray-api:latest
-```
-
-Run:
+The production image is published on Docker Hub.
 
 ```bash
-docker run -p 8000:8000 <dockerhub-username>/xray-api:latest
+docker pull alia123/xray-api:latest
 ```
 
-## AWS Deployment
+Run directly:
 
-The application is containerized with Docker and deployed on an AWS EC2 instance.
+```bash
+docker run -p 8000:8000 alia123/xray-api:latest
+```
 
-The deployment workflow is:
+---
 
+# AWS Deployment
+
+The application is deployed on an AWS EC2 instance using Docker.
+
+Deployment pipeline:
+
+```text
 Training
-→ Saved Keras Model
-→ Docker Image
-→ Docker Hub
-→ AWS EC2
-→ FastAPI Service
+    │
+best_model.keras
+    │
+Docker Image
+    │
+Docker Hub
+    │
+AWS EC2
+    │
+FastAPI
+```
 
-The API is exposed through FastAPI and can be accessed via the public EC2 IP address.
+Swagger running on EC2:
+
 ![AWS Deployment](images/swagger_EC2.png)
 
-## Continuous Integration
+---
 
-The project uses GitHub Actions to automatically validate every push.
+# CI/CD
 
-The CI pipeline performs the following steps:
+Every push to the `master` branch automatically triggers the deployment pipeline.
 
-1. Set up Python 3.10
-2. Install development dependencies
-3. Run Ruff for static code analysis
-4. Run Pytest
-5. Build the Docker image
-6. Push the image to Docker Hub
+```text
+Git Push
+    │
+    ▼
+GitHub Actions
+    │
+    ├── Install dependencies
+    ├── Ruff
+    ├── Format check
+    ├── Pytest
+    ├── Docker Build
+    ├── Docker Push
+    └── Deploy to AWS EC2
+```
 
-Only if all checks pass is the Docker image published.
+Only if every validation step succeeds is the Docker image published and automatically deployed to the production EC2 instance.
 
-## Future Improvements
+---
+
+# Project Status
+
+| Component | Status |
+|-----------|:------:|
+| Data Exploration | ✅ |
+| Model Training | ✅ |
+| Model Evaluation | ✅ |
+| Inference | ✅ |
+| FastAPI | ✅ |
+| Docker | ✅ |
+| Docker Hub | ✅ |
+| AWS EC2 | ✅ |
+| CI | ✅ |
+| CD | ✅ |
+| MLflow | ⏳ |
+| Model Registry | ⏳ |
+| Monitoring | ⏳ |
+
+---
+
+# Future Improvements
+
+## Machine Learning
 
 - Perform detailed error analysis.
 - Experiment with data augmentation strategies.
 - Fine-tune the MobileNetV2 backbone.
-- Adjust threshold for binary classification to improve model performance on the NORMAL class.
+- Optimize the decision threshold to improve the precision-recall trade-off.
+- Evaluate additional CNN architectures (EfficientNet, DenseNet, ConvNeXt).
 
-## Next steps
+## MLOps
 
-- Add CD workflow.
-- Add model monitoring and logging.
+- MLflow experiment tracking
+- Model Registry
+- Automatic model versioning
+- Custom domain with HTTPS
+- Nginx reverse proxy
+- Monitoring (Prometheus / Grafana)
+- TensorFlow Serving
 
-## Tech Stack
+---
 
-* Python
-* TensorFlow / Keras
-* NumPy
-* Matplotlib
-* Scikit-learn
-* YAML
-* Git
-* GitHub
+# License
+
+MIT License.
