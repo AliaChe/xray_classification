@@ -12,7 +12,7 @@ from sklearn.metrics import (
 Path("images").mkdir(exist_ok=True)
 
 
-def plot_history(history):
+def plot_training_curves(history):
     _, axes = plt.subplots(1, 2, figsize=(12, 5))
 
     # Accuracy

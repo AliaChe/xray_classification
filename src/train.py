@@ -1,10 +1,11 @@
 from tensorflow.keras import callbacks
 import mlflow
+from pathlib import Path
 from src.data.load_data import load_datasets
 from src.models.cnn_model import build_model
 from src.utils.load_config import load_config
 from src.data.load_data import compute_weights
-from src.evaluate import plot_history, plot_confusion_matrix, plot_roc_curve
+from src.evaluate import plot_training_curves, plot_confusion_matrix, plot_roc_curve
 
 
 config = load_config()
@@ -54,8 +55,18 @@ with mlflow.start_run():
 
     print("Test accuracy:", test_acc)
 
-    plot_history(history)
-
+    plot_training_curves(history)
     plot_confusion_matrix(model, test_ds, class_names, threshold=0.5)
-
     plot_roc_curve(model, test_ds)
+
+    for metric_name, values in history.history.items():
+        for epoch, value in enumerate(values):
+            mlflow.log_metric(metric_name, value, step=epoch)
+    
+    for artifact in Path("images").glob("*.png"):
+        mlflow.log_artifact(str(artifact))
+
+    mlflow.tensorflow.log_model(
+        model=model,
+        artifact_path="model",
+    )
