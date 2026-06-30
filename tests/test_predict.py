@@ -6,6 +6,7 @@ from src.predict import load_image
 
 client = TestClient(app)
 
+
 @patch("app.main.predict_image")
 def test_predict_success(mock_predict):
     mock_predict.return_value = {
