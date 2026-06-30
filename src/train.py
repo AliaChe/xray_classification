@@ -56,6 +56,7 @@ with mlflow.start_run():
     print("Test accuracy:", test_acc)
 
     artifacts = config["paths"]["artifacts"]
+    Path(artifacts).mkdir(exist_ok=True)
 
     plot_training_curves(history, artifacts)
     plot_confusion_matrix(model, test_ds, class_names, artifacts, threshold=0.5)
