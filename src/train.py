@@ -55,15 +55,17 @@ with mlflow.start_run():
 
     print("Test accuracy:", test_acc)
 
-    plot_training_curves(history)
-    plot_confusion_matrix(model, test_ds, class_names, threshold=0.5)
-    plot_roc_curve(model, test_ds)
+    artifacts = config["paths"]["artifacts"]
+
+    plot_training_curves(history, artifacts)
+    plot_confusion_matrix(model, test_ds, class_names, artifacts, threshold=0.5)
+    plot_roc_curve(model, test_ds, artifacts)
 
     for metric_name, values in history.history.items():
         for epoch, value in enumerate(values):
             mlflow.log_metric(metric_name, value, step=epoch)
     
-    for artifact in Path("images").glob("*.png"):
+    for artifact in Path(artifacts).glob("*.png"):
         mlflow.log_artifact(str(artifact))
 
     mlflow.tensorflow.log_model(

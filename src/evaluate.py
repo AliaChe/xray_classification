@@ -12,7 +12,7 @@ from sklearn.metrics import (
 Path("images").mkdir(exist_ok=True)
 
 
-def plot_training_curves(history):
+def plot_training_curves(history, save_path):
     _, axes = plt.subplots(1, 2, figsize=(12, 5))
 
     # Accuracy
@@ -32,11 +32,11 @@ def plot_training_curves(history):
     axes[1].legend()
 
     plt.tight_layout()
-    plt.savefig("images/training_curves.png", dpi=150)
+    plt.savefig(f"{save_path}/training_curves.png", dpi=150)
     plt.show()
 
 
-def plot_confusion_matrix(model, test_ds, class_names, threshold=0.5):
+def plot_confusion_matrix(model, test_ds, class_names, save_path, threshold=0.5):
 
     y_true, y_scores = get_predictions(model, test_ds)
 
@@ -53,7 +53,7 @@ def plot_confusion_matrix(model, test_ds, class_names, threshold=0.5):
     disp.plot(ax=ax)
 
     plt.title(f"Confusion Matrix (threshold={threshold})")
-    plt.savefig("images/confusion_matrix.png")
+    plt.savefig(f"{save_path}/confusion_matrix.png")
     plt.show()
 
 
@@ -71,7 +71,7 @@ def get_predictions(model, test_ds):
     return (np.array(y_true), np.array(y_scores))
 
 
-def plot_roc_curve(model, test_ds):
+def plot_roc_curve(model, test_ds, save_path):
     y_true, y_scores = get_predictions(model, test_ds)
 
     fpr, tpr, thresholds = roc_curve(y_true, y_scores)
@@ -87,7 +87,7 @@ def plot_roc_curve(model, test_ds):
     plt.legend()
 
     plt.tight_layout()
-    plt.savefig("images/roc_curve.png", dpi=150)
+    plt.savefig(f"{save_path}/roc_curve.png", dpi=150)
     plt.show()
 
     print(f"ROC AUC: {roc_auc:.4f}")

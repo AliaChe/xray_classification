@@ -5,4 +5,4 @@ saved_models/
 .ipynb_checkpoints/
 tmp/
 mlruns/
-images/
+artifacts/

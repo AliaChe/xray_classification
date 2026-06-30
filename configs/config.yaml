@@ -10,3 +10,6 @@ training:
   seed: 42
   patience: 3
   dropout: 0.2
+
+paths:
+  artifacts: artifacts
