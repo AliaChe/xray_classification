@@ -16,7 +16,12 @@ class PredictionResponse(BaseModel):
 
 app = FastAPI()
 
-model = tf.keras.models.load_model("saved_models/best_model.keras")
+model = None
+
+@app.on_event("startup")
+def load_model():
+    global model
+    model = tf.keras.models.load_model("saved_models/best_model.keras")
 
 Path("tmp").mkdir(exist_ok=True)
 
