@@ -1,11 +1,15 @@
 from tensorflow.keras import callbacks
+import mlflow
 from src.data.load_data import load_datasets
 from src.models.cnn_model import build_model
 from src.utils.load_config import load_config
 from src.data.load_data import compute_weights
 from src.evaluate import plot_history, plot_confusion_matrix, plot_roc_curve
 
+
 config = load_config()
+
+mlflow.set_experiment("xray-classification")
 
 train_ds, val_ds, test_ds, class_names = load_datasets(config)
 
@@ -29,20 +33,29 @@ training_callbacks = [
     ),
 ]
 
-history = model.fit(
-    train_ds,
-    validation_data=val_ds,
-    epochs=config["training"]["epochs"],
-    class_weight=class_weights,
-    callbacks=training_callbacks,
-)
+with mlflow.start_run():
 
-test_loss, test_acc = model.evaluate(test_ds)
+    params = {
+        **config["training"],
+        "image_size": config["data"]["image_size"],
+    }
 
-print("Test accuracy:", test_acc)
+    mlflow.log_params(params)
 
-plot_history(history)
+    history = model.fit(
+        train_ds,
+        validation_data=val_ds,
+        epochs=config["training"]["epochs"],
+        class_weight=class_weights,
+        callbacks=training_callbacks,
+    )
 
-plot_confusion_matrix(model, test_ds, class_names, threshold=0.5)
+    test_loss, test_acc = model.evaluate(test_ds)
 
-plot_roc_curve(model, test_ds)
+    print("Test accuracy:", test_acc)
+
+    plot_history(history)
+
+    plot_confusion_matrix(model, test_ds, class_names, threshold=0.5)
+
+    plot_roc_curve(model, test_ds)

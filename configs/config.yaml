@@ -9,3 +9,4 @@ training:
   learning_rate: 0.001
   seed: 42
   patience: 3
+  dropout: 0.2
