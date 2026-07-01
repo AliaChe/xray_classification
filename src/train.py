@@ -6,7 +6,7 @@ from src.models.cnn_model import build_model
 from src.utils.load_config import load_config
 from src.data.load_data import compute_weights
 from src.evaluate import plot_training_curves, plot_confusion_matrix, plot_roc_curve
-
+from src.utils.mlflow_logging import log_git_commit
 
 config = load_config()
 
@@ -42,6 +42,7 @@ with mlflow.start_run():
         "architecture": config["model"]["architecture"]
     }
 
+    log_git_commit()
     mlflow.log_params(params)
     mlflow.log_artifact("configs/config.yaml")
 
