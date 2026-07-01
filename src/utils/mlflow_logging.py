@@ -29,6 +29,7 @@ def log_params(config):
         **config["training"],
         "image_size": config["data"]["image_size"],
         "architecture": config["model"]["architecture"],
+        "threshold": config["evaluation"]["threshold"]
     }
 
     mlflow.log_params(params)

@@ -9,10 +9,13 @@ training:
   learning_rate: 0.001
   seed: 42
   patience: 3
-  dropout: 0.2
 
 paths:
   artifacts: artifacts
 
 model:
   architecture: MobileNetV2
+  dropout: 0.2
+
+evaluation:
+  threshold: 0.4

@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+from src.utils.load_config import load_config
 
 
 CLASS_NAMES = ["NORMAL", "PNEUMONIA"]
@@ -24,7 +25,7 @@ def load_image(image_path, image_size):
     return img_array
 
 
-def predict_image(model, image_path, image_size=224, threshold=0.5):
+def predict_image(model, image_path, image_size, threshold):
 
     img_array = load_image(image_path, image_size)
 
@@ -42,6 +43,9 @@ def predict_image(model, image_path, image_size=224, threshold=0.5):
 
 
 def main():
+
+    config = load_config()
+
     parser = argparse.ArgumentParser(
         description="Predict pneumonia from a chest X-ray image."
     )
@@ -73,11 +77,17 @@ def main():
 
     model = tf.keras.models.load_model(args.model_path)
 
+    threshold = (
+        args.threshold
+        if args.threshold is not None
+        else config["evaluation"]["threshold"]
+    )
+
     result = predict_image(
         model=model,
         image_path=image_path,
-        image_size=args.image_size,
-        threshold=args.threshold,
+        image_size=config["data"]["image_size"],
+        threshold=threshold,
     )
 
     print(f"Prediction: {result['prediction']}")

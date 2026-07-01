@@ -16,7 +16,7 @@ def build_model(config):
         [
             base_model,
             layers.GlobalAveragePooling2D(),
-            layers.Dropout(config["training"]["dropout"]),
+            layers.Dropout(config["model"]["dropout"]),
             layers.Dense(1, activation="sigmoid"),
         ]
     )

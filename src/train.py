@@ -61,7 +61,7 @@ with mlflow.start_run():
         test_ds,
         class_names,
         artifacts_dir,
-        threshold=0.5,
+        config["evaluation"]["threshold"],
     )
     plot_roc_curve(model, test_ds, artifacts_dir)
 

@@ -33,7 +33,7 @@ def plot_training_curves(history, artifacts_dir):
     plt.show()
 
 
-def plot_confusion_matrix(model, test_ds, class_names, artifacts_dir, threshold=0.5):
+def plot_confusion_matrix(model, test_ds, class_names, artifacts_dir, threshold):
 
     y_true, y_scores = get_predictions(model, test_ds)
 

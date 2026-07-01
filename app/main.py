@@ -6,7 +6,7 @@ from fastapi import File
 from fastapi import HTTPException
 from pydantic import BaseModel
 from src.predict import predict_image
-
+from src.utils.load_config import load_config
 
 class PredictionResponse(BaseModel):
     prediction: str
@@ -17,7 +17,10 @@ class PredictionResponse(BaseModel):
 app = FastAPI()
 
 model = None
+config = load_config()
 
+threshold = config["evaluation"]["threshold"]
+image_size = config["data"]["image_size"]
 
 @app.on_event("startup")
 def load_model():
@@ -55,7 +58,11 @@ async def predict(file: UploadFile = File(...)):
         buffer.write(contents)
 
     try:
-        result = predict_image(model=model, image_path=temp_path)
+        result = predict_image(model=model,
+            image_path=temp_path,
+            image_size=image_size,
+            threshold=threshold
+        )
 
         return result
 
