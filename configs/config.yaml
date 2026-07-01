@@ -13,3 +13,6 @@ training:
 
 paths:
   artifacts: artifacts
+
+model:
+  architecture: MobileNetV2

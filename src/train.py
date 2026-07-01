@@ -39,9 +39,21 @@ with mlflow.start_run():
     params = {
         **config["training"],
         "image_size": config["data"]["image_size"],
+        "architecture": config["model"]["architecture"]
     }
 
     mlflow.log_params(params)
+    mlflow.log_artifact("configs/config.yaml")
+
+    mlflow.set_tags(
+        {
+            "framework": "TensorFlow",
+            "model": "MobileNetV2",
+            "dataset": "Chest X-Ray Pneumonia",
+            "stage": "baseline",
+            "author":"Alia"
+        }
+    )
 
     history = model.fit(
         train_ds,
