@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from pathlib import Path
 from sklearn.metrics import (
     confusion_matrix,
     ConfusionMatrixDisplay,
@@ -9,10 +8,8 @@ from sklearn.metrics import (
     auc,
 )
 
-Path("images").mkdir(exist_ok=True)
 
-
-def plot_training_curves(history, save_path):
+def plot_training_curves(history, artifacts_dir):
     _, axes = plt.subplots(1, 2, figsize=(12, 5))
 
     # Accuracy
@@ -32,17 +29,23 @@ def plot_training_curves(history, save_path):
     axes[1].legend()
 
     plt.tight_layout()
-    plt.savefig(f"{save_path}/training_curves.png", dpi=150)
+    plt.savefig(f"{artifacts_dir}/training_curves.png", dpi=150)
     plt.show()
 
 
-def plot_confusion_matrix(model, test_ds, class_names, save_path, threshold=0.5):
+def plot_confusion_matrix(model, test_ds, class_names, artifacts_dir, threshold=0.5):
 
     y_true, y_scores = get_predictions(model, test_ds)
 
     y_pred = (y_scores > threshold).astype(int)
 
-    print(classification_report(y_true, y_pred, target_names=class_names))
+    report = classification_report(
+        y_true,
+        y_pred,
+        target_names=class_names,
+    )
+
+    (artifacts_dir / "classification_report.txt").write_text(report)
 
     cm = confusion_matrix(y_true, y_pred)
 
@@ -53,7 +56,7 @@ def plot_confusion_matrix(model, test_ds, class_names, save_path, threshold=0.5)
     disp.plot(ax=ax)
 
     plt.title(f"Confusion Matrix (threshold={threshold})")
-    plt.savefig(f"{save_path}/confusion_matrix.png")
+    plt.savefig(f"{artifacts_dir}/confusion_matrix.png")
     plt.show()
 
 
@@ -71,7 +74,7 @@ def get_predictions(model, test_ds):
     return (np.array(y_true), np.array(y_scores))
 
 
-def plot_roc_curve(model, test_ds, save_path):
+def plot_roc_curve(model, test_ds, artifacts_dir):
     y_true, y_scores = get_predictions(model, test_ds)
 
     fpr, tpr, thresholds = roc_curve(y_true, y_scores)
@@ -87,7 +90,7 @@ def plot_roc_curve(model, test_ds, save_path):
     plt.legend()
 
     plt.tight_layout()
-    plt.savefig(f"{save_path}/roc_curve.png", dpi=150)
+    plt.savefig(f"{artifacts_dir}/roc_curve.png", dpi=150)
     plt.show()
 
     print(f"ROC AUC: {roc_auc:.4f}")

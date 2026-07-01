@@ -1,12 +1,25 @@
-from tensorflow.keras import callbacks
-import mlflow
 from pathlib import Path
-from src.data.load_data import load_datasets
+
+import mlflow
+
+from src.data.load_data import compute_weights, load_datasets
+from src.evaluate import (
+    plot_confusion_matrix,
+    plot_roc_curve,
+    plot_training_curves,
+)
+from src.models.callbacks import build_callbacks
 from src.models.cnn_model import build_model
 from src.utils.load_config import load_config
-from src.data.load_data import compute_weights
-from src.evaluate import plot_training_curves, plot_confusion_matrix, plot_roc_curve
-from src.utils.mlflow_logging import log_git_commit
+from src.utils.mlflow_logging import (
+    log_artifacts,
+    log_git_commit,
+    log_history,
+    log_model,
+    log_params,
+    log_test_metrics,
+    set_tags,
+)
 
 config = load_config()
 
@@ -14,47 +27,23 @@ mlflow.set_experiment("xray-classification")
 
 train_ds, val_ds, test_ds, class_names = load_datasets(config)
 
-class_weights = compute_weights(config["data"]["path"], class_names)
-print(class_weights)
+class_weights = compute_weights(
+    config["data"]["path"],
+    class_names,
+)
 
 model = build_model(config)
-
 model.summary()
 
-training_callbacks = [
-    callbacks.EarlyStopping(
-        monitor="val_loss",
-        patience=config["training"]["patience"],
-        restore_best_weights=True,
-    ),
-    callbacks.ModelCheckpoint(
-        filepath="saved_models/best_model.keras",
-        monitor="val_loss",
-        save_best_only=True,
-    ),
-]
+training_callbacks = build_callbacks(config)
+
+artifacts_dir = Path(config["paths"]["artifacts"])
+artifacts_dir.mkdir(parents=True, exist_ok=True)
 
 with mlflow.start_run():
-
-    params = {
-        **config["training"],
-        "image_size": config["data"]["image_size"],
-        "architecture": config["model"]["architecture"]
-    }
-
     log_git_commit()
-    mlflow.log_params(params)
-    mlflow.log_artifact("configs/config.yaml")
-
-    mlflow.set_tags(
-        {
-            "framework": "TensorFlow",
-            "model": "MobileNetV2",
-            "dataset": "Chest X-Ray Pneumonia",
-            "stage": "baseline",
-            "author":"Alia"
-        }
-    )
+    log_params(config)
+    set_tags()
 
     history = model.fit(
         train_ds,
@@ -66,23 +55,21 @@ with mlflow.start_run():
 
     test_loss, test_acc = model.evaluate(test_ds)
 
-    print("Test accuracy:", test_acc)
-
-    artifacts = config["paths"]["artifacts"]
-    Path(artifacts).mkdir(exist_ok=True)
-
-    plot_training_curves(history, artifacts)
-    plot_confusion_matrix(model, test_ds, class_names, artifacts, threshold=0.5)
-    plot_roc_curve(model, test_ds, artifacts)
-
-    for metric_name, values in history.history.items():
-        for epoch, value in enumerate(values):
-            mlflow.log_metric(metric_name, value, step=epoch)
-    
-    for artifact in Path(artifacts).glob("*.png"):
-        mlflow.log_artifact(str(artifact))
-
-    mlflow.tensorflow.log_model(
-        model=model,
-        artifact_path="model",
+    plot_training_curves(history, artifacts_dir)
+    plot_confusion_matrix(
+        model,
+        test_ds,
+        class_names,
+        artifacts_dir,
+        threshold=0.5,
     )
+    plot_roc_curve(model, test_ds, artifacts_dir)
+
+    log_history(history)
+    log_test_metrics(test_loss, test_acc)
+
+    log_artifacts(artifacts_dir)
+
+    log_model(model)
+
+print(f"Test accuracy: {test_acc:.4f}")
