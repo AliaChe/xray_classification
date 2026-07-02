@@ -28,6 +28,7 @@ def log_params(config):
     params = {
         **config["training"],
         "image_size": config["data"]["image_size"],
+        "dropout": config["model"]["dropout"],
         "architecture": config["model"]["architecture"],
         "threshold": config["evaluation"]["threshold"],
     }
