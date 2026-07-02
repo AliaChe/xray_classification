@@ -9,7 +9,6 @@ RUN pip install --no-cache-dir -r requirements/prod.txt
 COPY app/ app/
 COPY src/ src/
 COPY configs/ configs/
-COPY saved_models/ saved_models/
 
 RUN mkdir -p tmp
 

@@ -19,3 +19,7 @@ model:
 
 evaluation:
   threshold: 0.4
+
+mlflow:
+  tracking_uri: http://<EC2-IP>:5000
+  experiment: xray-classification

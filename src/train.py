@@ -23,7 +23,9 @@ from src.utils.mlflow_logging import (
 
 config = load_config()
 
-mlflow.set_experiment("xray-classification")
+mlflow.set_tracking_uri(config["mlflow"]["tracking_uri"])
+
+mlflow.set_experiment(config["mlflow"]["experiment"])
 
 train_ds, val_ds, test_ds, class_names = load_datasets(config)
 
