@@ -1,5 +1,5 @@
 from pathlib import Path
-import tensorflow as tf
+from mlflow import tensorflow as tf
 from fastapi import FastAPI
 from fastapi import UploadFile
 from fastapi import File
@@ -27,7 +27,9 @@ image_size = config["data"]["image_size"]
 @app.on_event("startup")
 def load_model():
     global model
-    model = tf.keras.models.load_model("saved_models/best_model.keras")
+    model = tf.load_model(
+        "models:/ChestXRayClassifier@champion"
+    )
 
 
 Path("tmp").mkdir(exist_ok=True)
