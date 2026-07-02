@@ -27,9 +27,7 @@ image_size = config["data"]["image_size"]
 @app.on_event("startup")
 def load_model():
     global model
-    model = tf.load_model(
-        "models:/ChestXRayClassifier@champion"
-    )
+    model = tf.load_model("models:/ChestXRayClassifier@champion")
 
 
 Path("tmp").mkdir(exist_ok=True)
