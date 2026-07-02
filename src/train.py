@@ -72,4 +72,11 @@ with mlflow.start_run():
 
     log_model(model)
 
+    model_uri = f"runs:/{mlflow.active_run().info.run_id}/model"
+
+    mlflow.register_model(
+        model_uri=model_uri,
+        name="ChestXRayClassifier",
+    )
+
 print(f"Test accuracy: {test_acc:.4f}")
