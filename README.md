@@ -158,7 +158,6 @@ The dataset is highly imbalanced, with approximately 74% pneumonia images.
 - Binary Cross-Entropy
 - Adam Optimizer
 - EarlyStopping
-- ModelCheckpoint
 - Class Weights
 
 ---
@@ -219,7 +218,6 @@ weighted avg      0.86      0.84      0.83       624
 │   ├── dev.txt
 │   ├── prod.txt
 │   └── train.txt
-├── saved_models/
 ├── scripts/
 ├── src/
 ├── tests/
@@ -260,12 +258,7 @@ Train the model:
 python -m src.train
 ```
 
-The trained model is saved as:
-
-```text
-saved_models/best_model.keras
-```
-> **Note:** If `saved_models/best_model.keras` is missing, run the training command above before using the inference script, the FastAPI application, or building the Docker image.
+The trained model is saved in mlflow. 
 
 ---
 

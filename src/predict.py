@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 
 import numpy as np
-import tensorflow as tf
+from mlflow import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from src.utils.load_config import load_config
@@ -75,7 +75,7 @@ def main():
     if not image_path.exists():
         raise FileNotFoundError(f"Image not found: {image_path}")
 
-    model = tf.keras.models.load_model(args.model_path)
+    model = tf.load_model("models:/ChestXRayClassifier@champion")
 
     threshold = (
         args.threshold
